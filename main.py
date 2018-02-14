@@ -9,7 +9,7 @@ class Kortti(object):
 
     def __str__(self):
         if not self.paljastettu:
-            return "hidden"
+            return "piilotettu"
         return "{}-{}".format(self.maa, self.arvo)
 
 
@@ -27,6 +27,7 @@ class Korttipakka(object):
         for i in self.kortit:
             temp += str(i)
             temp += ', '
+        temp = temp[:len(temp) - 2]  # Poistetaan viimeinen pilkku.
         return temp
 
     def shuffle(self):
@@ -70,6 +71,18 @@ class Pelaaja(object):
             jaettava_kortti.paljastettu = template[i].paljastettu
             self.käsi.append(jaettava_kortti)
 
+    def paljastaKortti(self, indeksi):
+        self.käsi[indeksi].paljastettu = True
+
+    def __str__(self):
+        temp = ''
+        for i in self.käsi:
+            temp += str(i)
+            temp += ', '
+        temp = temp[:len(temp) - 2]  # viimeinen pillku pois.
+        return temp
+
+
 pokerikäsi = Template([Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False)])
 
 korttipakka = Korttipakka()
@@ -78,4 +91,7 @@ korttipakka.shuffle()
 kaappo = Pelaaja('Kaappo')
 kaappo.jaaKortit(pokerikäsi, korttipakka)
 
-print(kaappo.käsi)
+print(kaappo)
+for i in range(5):
+    kaappo.paljastaKortti(i)
+    print(kaappo)
