@@ -82,16 +82,33 @@ class Pelaaja(object):
         temp = temp[:len(temp) - 2]  # viimeinen pillku pois.
         return temp
 
+class Pelipöytä(object):
+    def __init__(self, koko_x, koko_y):
+        self.kortit = [['0'] * koko_x] * koko_y
+        for x in range(koko_x):
+            for y in range(koko_y):
+                self.kortit[x][y] = Kortti(paljastettu=False)
+        print(self.kortit)
+
+    def noudaKortti(self, x, y):
+        return self.kortit[x][y]
+
+    def lyöKortti(self, x, y, kortti):
+        self.kortit[x][y] = kortti
+
+
+
+
 
 pokerikäsi = Template([Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False)])
-
-korttipakka = Korttipakka()
-korttipakka.shuffle()
-
-kaappo = Pelaaja('Kaappo')
-kaappo.jaaKortit(pokerikäsi, korttipakka)
-
-print(kaappo)
-for i in range(5):
-    kaappo.paljastaKortti(i)
-    print(kaappo)
+#
+# korttipakka = Korttipakka()
+# korttipakka.shuffle()
+#
+# kaappo = Pelaaja('Kaappo')
+# kaappo.jaaKortit(pokerikäsi, korttipakka)
+#
+# print(kaappo)
+# for i in range(5):
+#     kaappo.paljastaKortti(i)
+#     print(kaappo)
