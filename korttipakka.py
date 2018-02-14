@@ -8,8 +8,8 @@ class Kortti(object):
         self.paljastettu = paljastettu
 
     def __str__(self):
-        if not self.paljastettu:
-            return "piilotettu"
+        # if not self.paljastettu:
+        #     return "piilotettu"
         return "{}-{}".format(self.maa, self.arvo)
 
 
@@ -75,29 +75,56 @@ class Pelaaja(object):
         self.käsi[indeksi].paljastettu = True
 
     def __str__(self):
+        return self.nimi
+
+    def printKäsi(self):
         temp = ''
         for i in self.käsi:
             temp += str(i)
             temp += ', '
+
         temp = temp[:len(temp) - 2]  # viimeinen pillku pois.
         return temp
 
+
 class Pelipöytä(object):
+    korttien_esitystapa = {'Ruutu': '♢', 'Risti': '♧', 'Pata': '♤', 'Hertta': '♡'}
+
     def __init__(self, koko_x, koko_y):
+        self.koko_x = koko_x
+        self.koko_y = koko_y
         self.kortit = [['0'] * koko_x] * koko_y
         for x in range(koko_x):
             for y in range(koko_y):
                 self.kortit[x][y] = Kortti(paljastettu=False)
         print(self.kortit)
 
+    def __str__(self):
+        temp = ''
+        for x in range(self.koko_x):
+            for y in range(self.koko_y):
+                if self.noudaKortti(x, y).maa is None:
+                    temp += '0'
+                else:
+                    temp += '{}{}'.format(Pelipöytä.korttien_esitystapa[self.noudaKortti(x, y).maa], str(self.noudaKortti(x, y).arvo))
+            temp += '\n'
+        return temp
+
     def noudaKortti(self, x, y):
         return self.kortit[x][y]
 
-    def lyöKortti(self, x, y, kortti):
-        self.kortit[x][y] = kortti
+    def lyöKortti(self, x, y, kortti, pelaaja):
+        for i in range(len(pelaaja.käsi)):
+            pelaaja.käsi[i].paljastettu = True  # Väliaikainen
+        print(str(kortti), pelaaja.printKäsi())
+        if str(kortti) in pelaaja.printKäsi():
+            self.kortit[x][y] = kortti
+            pelaaja.käsi.remove(kortti)
+        else:
+            print('Pelaaja {} ei voi laittaa pöytään korttia {}'.format(pelaaja, kortti))
 
-
-
+        for i in range(len(pelaaja.käsi)):
+            pelaaja.käsi[i].paljastettu = False
 
 
 pokerikäsi = Template([Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False)])
