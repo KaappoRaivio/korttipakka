@@ -52,16 +52,30 @@ class Template(object):
     def __init__(self, lista):
         self.lista = lista
 
+    def __len__(self):
+        return len(self.lista)
+
+    def __getitem__(self, index):
+        return self.lista[index]
+
 
 class Pelaaja(object):
     def __init__(self, nimi):
         self.nimi = nimi
         self.käsi = []
 
-    def jaaKortit(self, template):
-        pass
+    def jaaKortit(self, template, jaettava_pakka):
+        for i in range(len(template)):
+            jaettava_kortti = jaettava_pakka.otaKorttiPakanPäältä()
+            jaettava_kortti.paljastettu = template[i].paljastettu
+            self.käsi.append(jaettava_kortti)
 
-pokerikäsi = Template([Kortti(paljastettu=False) * 5])
+pokerikäsi = Template([Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False)])
 
 korttipakka = Korttipakka()
 korttipakka.shuffle()
+
+kaappo = Pelaaja('Kaappo')
+kaappo.jaaKortit(pokerikäsi, korttipakka)
+
+print(kaappo.käsi)
