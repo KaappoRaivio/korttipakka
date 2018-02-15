@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import korttipakka
 
 pakka = korttipakka.Korttipakka()

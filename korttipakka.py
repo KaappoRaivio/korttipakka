@@ -10,7 +10,9 @@ class Kortti(object):
     def __str__(self):
         # if not self.paljastettu:
         #     return "piilotettu"
-        return "{}-{}".format(self.maa, self.arvo)
+        maat = Pelipöytä.korttien_esitystapa
+
+        return "{}-{}".format(maat[self.maa], self.arvo)
 
 
 class Korttipakka(object):
