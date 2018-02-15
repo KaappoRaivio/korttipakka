@@ -90,6 +90,11 @@ class Pelaaja(object):
         temp = temp[:len(temp) - 2]  # viimeinen pillku pois.
         return temp
 
+    def nostaKortti(self, pakka):
+        nostettava_kortti = pakka.otaKorttiPakanPäältä()
+        self.käsi.append(nostettava_kortti)
+        return nostettava_kortti
+
 
 class Pelipöytä(object):
     korttien_esitystapa = {'Ruutu': '♢', 'Risti': '♧', 'Pata': '♤', 'Hertta': '♡'}
@@ -110,7 +115,7 @@ class Pelipöytä(object):
                 if self.noudaKortti(x, y).maa is None:
                     temp += '0'
                 else:
-                    temp += '{}{}'.format(Pelipöytä.korttien_esitystapa[self.noudaKortti(x, y).maa], str(self.noudaKortti(x, y).arvo))
+                    temp += '{}-{}'.format(Pelipöytä.korttien_esitystapa[self.noudaKortti(x, y).maa], str(self.noudaKortti(x, y).arvo))
             temp += '\n'
         return temp
 

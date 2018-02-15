@@ -37,6 +37,11 @@ while True:
         pöytä.lyöKortti(0, 0, pelaajat[pelaajaindeksi].käsi[kortti_kädestä], pelaajat[pelaajaindeksi])
     else:
         print('Tuo kortti ei mene!')
+        nostettu_kortti = vuoro.nostaKortti(pakka)
+        if nostettu_kortti.maa == pöytä.noudaKortti(0, 0).maa or nostettu_kortti.arvo == pöytä.noudaKortti(0, 0).arvo:
+            pöytä.lyöKortti(0, 0, nostettu_kortti, pelaajat[pelaajaindeksi])
+        else:
+            print('Tuokaan kortti ei mene!')
 
     print(pöytä)
     pelaajaindeksi += 1
