@@ -64,12 +64,14 @@ class Pelaaja(object):
     def __init__(self, nimi):
         self.nimi = nimi
         self.käsi = []
+        self.korttien_määrä = len(self.käsi)
 
     def jaaKortit(self, template, jaettava_pakka):
         for i in range(len(template)):
             jaettava_kortti = jaettava_pakka.otaKorttiPakanPäältä()
             jaettava_kortti.paljastettu = template[i].paljastettu
             self.käsi.append(jaettava_kortti)
+            self.korttien_määrä = len(self.käsi)
 
     def paljastaKortti(self, indeksi):
         self.käsi[indeksi].paljastettu = True
@@ -120,11 +122,15 @@ class Pelipöytä(object):
         if str(kortti) in pelaaja.printKäsi():
             self.kortit[x][y] = kortti
             pelaaja.käsi.remove(kortti)
+            pelaaja.korttien_määrä = len(pelaaja.käsi)
         else:
             print('Pelaaja {} ei voi laittaa pöytään korttia {}'.format(pelaaja, kortti))
 
         for i in range(len(pelaaja.käsi)):
             pelaaja.käsi[i].paljastettu = False
+
+    def lyöKorttiPakasta(self, x, y, pakka):
+        self.kortit[x][y] = pakka.otaKorttiPakanPäältä()
 
 
 pokerikäsi = Template([Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False)])
