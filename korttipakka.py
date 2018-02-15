@@ -118,7 +118,7 @@ class Pelipöytä(object):
     def lyöKortti(self, x, y, kortti, pelaaja):
         for i in range(len(pelaaja.käsi)):
             pelaaja.käsi[i].paljastettu = True  # Väliaikainen
-        print(str(kortti), pelaaja.printKäsi())
+
         if str(kortti) in pelaaja.printKäsi():
             self.kortit[x][y] = kortti
             pelaaja.käsi.remove(kortti)
@@ -134,14 +134,3 @@ class Pelipöytä(object):
 
 
 pokerikäsi = Template([Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False)])
-#
-# korttipakka = Korttipakka()
-# korttipakka.shuffle()
-#
-# kaappo = Pelaaja('Kaappo')
-# kaappo.jaaKortit(pokerikäsi, korttipakka)
-#
-# print(kaappo)
-# for i in range(5):
-#     kaappo.paljastaKortti(i)
-#     print(kaappo)

@@ -5,7 +5,6 @@ pakka.shuffle()
 
 pöytä = korttipakka.Pelipöytä(1, 1)
 
-
 pelaajien_määrä = int(input('Montako pelaajaa? '))
 pelaajat = [input('Pelaaja: ') for x in range(pelaajien_määrä)]
 
