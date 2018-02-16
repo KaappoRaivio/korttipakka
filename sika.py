@@ -8,6 +8,9 @@ pakka.shuffle()
 pöytä = korttipakka.Pelipöytä(1, 1)
 
 pelaajien_määrä = int(input('Montako pelaajaa? '))
+if pelaajien_määrä < 1:
+    raise Exception('Et voi pelata ilman pelaajia!')
+
 pelaajat = [input('Pelaaja: ') for x in range(pelaajien_määrä)]
 
 for i in range(len(pelaajat)):
@@ -21,7 +24,6 @@ print(pöytä)
 
 while True:
     pelaajaindeksi %= pelaajien_määrä
-    print(pelaajat[i])
 
     vuoro = pelaajat[pelaajaindeksi]
 
@@ -33,11 +35,22 @@ while True:
     print(pelaajat[pelaajaindeksi].printKäsi())
 
     kortti_kädestä = int(input('Mikä kortti? '))
+
+    if kortti_kädestä > len(vuoro.käsi) - 1:
+        print('Indeksi ei kelpaa!')
+        continue
+    sopiva_kortti = pöytä.noudaKortti(0, 0)
+
+    if pelaajat[pelaajaindeksi].käsi[kortti_kädestä].arvo == 7:
+        sopiva_kortti = korttipakka.Kortti(maa=input('Mitä maata? '))
+        kortti_kädestä = int(input('Mikä kortti? '))
+
     if pelaajat[pelaajaindeksi].käsi[kortti_kädestä].maa == pöytä.noudaKortti(0, 0).maa or pelaajat[pelaajaindeksi].käsi[kortti_kädestä].arvo == pöytä.noudaKortti(0, 0).arvo:
         pöytä.lyöKortti(0, 0, pelaajat[pelaajaindeksi].käsi[kortti_kädestä], pelaajat[pelaajaindeksi])
     else:
         print('Tuo kortti ei mene!')
         nostettu_kortti = vuoro.nostaKortti(pakka)
+        print(nostettu_kortti)
         if nostettu_kortti.maa == pöytä.noudaKortti(0, 0).maa or nostettu_kortti.arvo == pöytä.noudaKortti(0, 0).arvo:
             pöytä.lyöKortti(0, 0, nostettu_kortti, pelaajat[pelaajaindeksi])
         else:

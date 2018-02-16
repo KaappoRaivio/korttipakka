@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import random
 
 
@@ -106,7 +108,6 @@ class Pelipöytä(object):
         for x in range(koko_x):
             for y in range(koko_y):
                 self.kortit[x][y] = Kortti(paljastettu=False)
-        print(self.kortit)
 
     def __str__(self):
         temp = ''
