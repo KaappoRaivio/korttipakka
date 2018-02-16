@@ -113,7 +113,7 @@ class Pelipöytä(object):
         temp = ''
         for x in range(self.koko_x):
             for y in range(self.koko_y):
-                if self.noudaKortti(x, y).maa is None:
+                if self.noudaKortti(x, y).maa is None or self.noudaKortti(x, y).paljastettu is False:
                     temp += '0'
                 else:
                     temp += '{}-{}'.format(Pelipöytä.korttien_esitystapa[self.noudaKortti(x, y).maa], str(self.noudaKortti(x, y).arvo))
@@ -137,8 +137,11 @@ class Pelipöytä(object):
         for i in range(len(pelaaja.käsi)):
             pelaaja.käsi[i].paljastettu = False
 
-    def lyöKorttiPakasta(self, x, y, pakka):
-        self.kortit[x][y] = pakka.otaKorttiPakanPäältä()
+    def lyöKorttiPakasta(self, x, y, pakka, kortti=None):
+        if kortti is None:
+            self.kortit[x][y] = pakka.otaKorttiPakanPäältä()
+        else:
+            self.kortit[x][y] = kortti
 
 
 pokerikäsi = Template([Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False)])

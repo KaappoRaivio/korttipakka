@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import korttipakka
+import time
 
 pakka = korttipakka.Korttipakka()
 pakka.shuffle()
@@ -19,7 +20,12 @@ for i in range(len(pelaajat)):
 
 pelaajaindeksi = 0
 
-pöytä.lyöKorttiPakasta(0, 0, pakka)
+aloituskortti = pakka.otaKorttiPakanPäältä()
+
+aloituskortti.paljastettu = True
+
+pöytä.lyöKorttiPakasta(0, 0, pakka, kortti=aloituskortti)
+
 print(pöytä)
 
 while True:
@@ -51,6 +57,7 @@ while True:
         print('Tuo kortti ei mene!')
         nostettu_kortti = vuoro.nostaKortti(pakka)
         print(nostettu_kortti)
+        time.sleep(1)
         if nostettu_kortti.maa == pöytä.noudaKortti(0, 0).maa or nostettu_kortti.arvo == pöytä.noudaKortti(0, 0).arvo:
             pöytä.lyöKortti(0, 0, nostettu_kortti, pelaajat[pelaajaindeksi])
         else:
