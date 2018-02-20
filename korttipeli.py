@@ -3,145 +3,103 @@
 import random
 
 
-class Kortti(object):
-    def __init__(self, maa=None, arvo=None, paljastettu=False):
-        self.maa = maa
-        self.arvo = arvo
-        self.paljastettu = paljastettu
+class Card(object):
+    def __init__(self, suit=None, value=None, visible=False):
+        self.suit = suit
+        self.value = value
+        self.visible = visible
 
     def __str__(self):
-        # if not self.paljastettu:
-        #     return "piilotettu"
-        maat = Pelipöytä.korttien_esitystapa
+        visual_representation_closed = {'diamonds': '♢', 'clubs': '♧', 'spades': '♤', 'hearts': '♡'}
+        visual_representation_open = {'diamonds': '♦', 'clubs': '♣', 'spades': '♠', 'hearts': '♥'}
 
-        return "{}-{}".format(maat[self.maa], self.arvo)
+        special_values = {**{11: 'J', 12: 'Q', 13: 'K', 14: 'A'}, **{x: x for x in range(11)}}
+        if self.visible:
+            return '{} {}'.format(visual_representation_open[self.suit], special_values[self.value])
+        else:
+            return '{} {}'.format(visual_representation_closed[self.suit], special_values[self.value])
 
 
-class Korttipakka(object):
-    def __init__(self, maat=['Ruutu', 'Risti', 'Hertta', 'Pata'], arvot=range(2, 15)):
-        self.kortit = []
-        self.maat = maat
-        self.arvot = arvot
-        for i in maat:
-            for a in arvot:
-                self.kortit.append(Kortti(i, a))
+class DeckOfCards(object):
+    suits = ['clubs', 'spades', 'hearts', 'diamonds']
 
-    def __str__(self):
-        temp = ''
-        for i in self.kortit:
-            temp += str(i)
-            temp += ', '
-        temp = temp[:len(temp) - 2]  # Poistetaan viimeinen pilkku.
-        return temp
+    def __init__(self, amount_of_cards, ace_as_one=False):
+        self.ace_as_one = ace_as_one
+        self.amount_of_cards = amount_of_cards
+        self.cards = []
+
+        for suit in DeckOfCards.suits:
+            if ace_as_one:
+                for value in range(1, 14):
+                    self.cards.append(Card(suit, value))
+            else:
+                for value in range(2, 15):
+                    self.cards.append(Card(suit, value))
 
     def shuffle(self):
-        for i in range(len(self.kortit) - 1, 0, -1):
-            random_indeksi = random.randint(0, i - 1)
-            self.kortit[random_indeksi], self.kortit[i] = self.kortit[i], self.kortit[random_indeksi]
+        for i in range(len(self.cards) - 1, 0, -1):
+            random_index = random.randint(0, i - 1)
+            self.cards[random_index], self.cards[i] = self.cards[i], self.cards[random_index]
 
-    def otaKorttiPakanPäältä(self):
-        kortti = self.kortit[0]
-        self.kortit = self.kortit[1:]
-        return kortti
+    def drawCard(self):
+        return self.cards.pop()
 
-    def laitaKorttiPakkaan(self, kortti):
-        if str(kortti) in str(self.kortit):
-            raise Exception('Kortti on jo pakassa!')
+
+class Player(object):
+    def __init__(self, name):
+        self.hand = []
+        self.name = name
+
+    def __setattr__(self, name, value):
+        if name == 'hand':
+            super(Player, self).__setattr__(name, value)
+            super(Player, self).__setattr__('amount_of_cards', len(self.hand))
         else:
-            # self.kortit = self.kortit[:random_paikka], kortti, self.kortit[random_paikka + 1:]
-            self.kortit.append(kortti)
-            self.shuffle()
+            super(Player, self).__setattr__(name, value)
 
-
-class Template(object):
-    def __init__(self, lista):
-        self.lista = lista
-
-    def __len__(self):
-        return len(self.lista)
-
-    def __getitem__(self, index):
-        return self.lista[index]
-
-
-class Pelaaja(object):
-    def __init__(self, nimi):
-        self.nimi = nimi
-        self.käsi = []
-        self.korttien_määrä = len(self.käsi)
-
-    def jaaKortit(self, template, jaettava_pakka):
-        for i in range(len(template)):
-            jaettava_kortti = jaettava_pakka.otaKorttiPakanPäältä()
-            jaettava_kortti.paljastettu = template[i].paljastettu
-            self.käsi.append(jaettava_kortti)
-            self.korttien_määrä = len(self.käsi)
-
-    def paljastaKortti(self, indeksi):
-        self.käsi[indeksi].paljastettu = True
 
     def __str__(self):
-        return self.nimi
+        temp = []
+        for i in self.hand:
+            temp.append(str(i))
+        return ', '.join(temp)
 
-    def printKäsi(self):
-        temp = ''
-        for i in self.käsi:
-            temp += str(i)
-            temp += ', '
-
-        temp = temp[:len(temp) - 2]  # viimeinen pillku pois.
-        return temp
-
-    def nostaKortti(self, pakka):
-        nostettava_kortti = pakka.otaKorttiPakanPäältä()
-        self.käsi.append(nostettava_kortti)
-        return nostettava_kortti
+    def addCardToHand(self, suit, value, visible):
+        self.hand = self.hand + [Card(suit, value, visible)]
 
 
-class Pelipöytä(object):
-    korttien_esitystapa = {'Ruutu': '♢', 'Risti': '♧', 'Pata': '♤', 'Hertta': '♡'}
+class Table(object):
+    def __init__(self, size_x, size_y, players, deck):
+        self.size_x = size_x
+        self.size_y = size_y
+        self.players = players
+        self.deck = deck
 
-    def __init__(self, koko_x, koko_y):
-        self.koko_x = koko_x
-        self.koko_y = koko_y
-        self.kortit = [['0'] * koko_x] * koko_y
-        for x in range(koko_x):
-            for y in range(koko_y):
-                self.kortit[x][y] = Kortti(paljastettu=False)
-
-    def __str__(self):
-        temp = ''
-        for x in range(self.koko_x):
-            for y in range(self.koko_y):
-                if self.noudaKortti(x, y).maa is None or self.noudaKortti(x, y).paljastettu is False:
-                    temp += '0'
-                else:
-                    temp += '{}-{}'.format(Pelipöytä.korttien_esitystapa[self.noudaKortti(x, y).maa], str(self.noudaKortti(x, y).arvo))
-            temp += '\n'
-        return temp
-
-    def noudaKortti(self, x, y):
-        return self.kortit[x][y]
-
-    def lyöKortti(self, x, y, kortti, pelaaja):
-        for i in range(len(pelaaja.käsi)):
-            pelaaja.käsi[i].paljastettu = True  # Väliaikainen
-
-        if str(kortti) in pelaaja.printKäsi():
-            self.kortit[x][y] = kortti
-            pelaaja.käsi.remove(kortti)
-            pelaaja.korttien_määrä = len(pelaaja.käsi)
-        else:
-            print('Pelaaja {} ei voi laittaa pöytään korttia {}'.format(pelaaja, kortti))
-
-        for i in range(len(pelaaja.käsi)):
-            pelaaja.käsi[i].paljastettu = False
-
-    def lyöKorttiPakasta(self, x, y, pakka, kortti=None):
-        if kortti is None:
-            self.kortit[x][y] = pakka.otaKorttiPakanPäältä()
-        else:
-            self.kortit[x][y] = kortti
+    def deal(self, template):
+        for player in self.players:
+            for template in template.cards_to_players:
+                card = self.deck.drawCard()
+                player.addCardToHand(card.suit, card.value, template.visible)
 
 
-pokerikäsi = Template([Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False), Kortti(paljastettu=False)])
+class DealTemplate(object):
+    def __init__(self, cards_to_table, cards_to_players):
+        self.cards_to_table = cards_to_table
+        self.cards_to_players = cards_to_players
+
+
+
+bismarkin_käsi = [Card(visible=True) for i in range(10)] + [Card(visible=False) for i in range(6)]
+
+
+deck = DeckOfCards(52)
+deck.shuffle()
+
+template = DealTemplate([], bismarkin_käsi)
+
+kaappo = Player('kaappo')
+
+table = Table(1, 1, [kaappo], deck)
+
+table.deal(template)
+print(kaappo)
