@@ -66,11 +66,17 @@ class Player(object):
         return len(self.hand)
 
     def __str__(self):
+        to_be_returned = ''
+
+        to_be_returned += self.name + ': '
+
         temp = []
         for i in self.hand:
-            print(i.peek())
+            # print(i.peek())
             temp.append(str(i.peek()))
-        return ', '.join(temp)
+
+        to_be_returned += ', '.join(temp)
+        return to_be_returned
 
     def addCardToHand(self, stack):
         self.hand.append(stack)
@@ -84,10 +90,17 @@ class Table(object):
         self.players = players
         self.deck = deck
 
+    def __str__(self):
+        to_be_returned = ''
+        for i in self.players:
+            to_be_returned += str(i)
+            to_be_returned += '\n\n'
 
+        to_be_returned += '\n\n\nAmount of cards in the deck: ' + str(self.deck.amount_of_cards)
+
+        return to_be_returned
     def deal(self, player_template, table_template):
         for player in self.players:
-            print(player.name)
             for i in player_template:
                 temp_stack = Stack()
                 for a in i.stack:
@@ -102,10 +115,6 @@ class Table(object):
                 self.cards[x][y] = self.deck.drawCard()
                 self.cards[x][y].visible = x.visible
 
-
-# class DealTemplate(object):
-#     def __init__(self, cards_to_table, player_hand):
-#
 
 class PLayerHandTemplate(object):
     def __init__(self, closed_dim_x, closed_dim_y=1, open_dim_x=0, open_dim_y=0):
@@ -125,9 +134,6 @@ class Cell(object):
         return len(self.stack)
 
 
-bismark_cell = Cell(Card(visible=False), Card(visible=True))
-bismark_cell_hand = Cell(Card(visible=False))
-
 bismarkin_käsi = []
 
 for i in range(10):
@@ -135,7 +141,6 @@ for i in range(10):
 for i in range(6):
     bismarkin_käsi.append(Cell(i, Card(visible=False)))
 
-# bismarkin_käsi = [Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), ]
 
 deck = DeckOfCards(52)
 deck.shuffle()
@@ -145,7 +150,7 @@ players = [Player('kaappo'), Player('kaappo2')]
 bismarkin_pöytä = Table(0, 0, players, deck)
 bismarkin_pöytä.deal(bismarkin_käsi, [])
 
-for i in players:
-    print(i.name)
-    for y in i.hand:
-        print(y)
+# for i in players:
+#     print(i)
+
+print(bismarkin_pöytä)
