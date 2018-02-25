@@ -29,7 +29,6 @@ class DeckOfCards(object):
 
     def __init__(self, amount_of_cards, ace_as_one=False):
         self.ace_as_one = ace_as_one
-        self.amount_of_cards = amount_of_cards
         self.cards = []
 
         for suit in DeckOfCards.suits:
@@ -48,6 +47,10 @@ class DeckOfCards(object):
     def drawCard(self):
         temp = self.cards.pop()
         return temp
+
+    @property
+    def amount_of_cards(self):
+        return len(self.cards)
 
 
 class Player(object):
@@ -83,21 +86,15 @@ class Table(object):
 
 
     def deal(self, player_template, table_template):
-        for stack in player_template:
-            temp_iterator = stack.stack
-            temp_stack = Stack()
-
-            while temp_iterator.isEmpty() is not True:
-                template_card = temp_iterator.pop()
-                real_card = self.deck.drawCard()
-
-                real_card.visible = template_card.visible
-
-                temp_stack.push(real_card)
-
-            for player in self.players:
+        for player in self.players:
+            print(player.name)
+            for i in player_template:
+                temp_stack = Stack()
+                for a in i.stack:
+                    real_card = self.deck.drawCard()
+                    real_card.visible = a.visible
+                    temp_stack.push(real_card)
                 player.addCardToHand(temp_stack)
-
 
 
         for y in table_template:
@@ -118,7 +115,7 @@ class PLayerHandTemplate(object):
 
 class Cell(object):
     def __init__(self, id, *args):
-        self.stack = Stack(*args)
+        self.stack = args
 
     def __str__(self):
         return 'type:<Cell>; ' + str(self.stack.peek())
@@ -135,6 +132,8 @@ bismarkin_käsi = []
 
 for i in range(10):
     bismarkin_käsi.append(Cell(i, Card(visible=False), Card(visible=True)))
+for i in range(6):
+    bismarkin_käsi.append(Cell(i, Card(visible=False)))
 
 # bismarkin_käsi = [Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), Cell(Card(visible=False), Card(visible=True)), ]
 
