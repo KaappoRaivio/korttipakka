@@ -116,11 +116,6 @@ class Table(object):
                 self.cards[x][y].visible = x.visible
 
 
-class PLayerHandTemplate(object):
-    def __init__(self, closed_dim_x, closed_dim_y=1, open_dim_x=0, open_dim_y=0):
-        self.closed_cards = [[Stack(Card(visible=False)) for x in range(closed_dim_x)] for y in range(closed_dim_y)]
-        self.open_cards = [[Stack(Card(visible=True)) for x in range(open_dim_x)] for y in range(open_dim_y)]
-
 
 class Cell(object):
     def __init__(self, id, *args):
