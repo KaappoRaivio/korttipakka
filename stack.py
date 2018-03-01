@@ -49,6 +49,9 @@ class Stack:
         else:
             return self.peek() <= other
 
+    def __iter__(self):
+        for i in self.__items:
+            yield i
 
     def isEmpty(self):
         return self.__items == []
@@ -58,7 +61,11 @@ class Stack:
             self.__items.append(item)
 
     def pop(self):
-        return self.__items.pop()
+        if self.isEmpty():
+            return None
+        else:
+            return self.__items.pop()
+
 
     def peek(self):
         temp = self.pop()

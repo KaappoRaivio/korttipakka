@@ -45,6 +45,8 @@ class DeckOfCards(object):
             self.cards[random_index], self.cards[i] = self.cards[i], self.cards[random_index]
 
     def drawCard(self):
+        if self.amount_of_cards == 0:
+            raise DrawCardError("Can't drawCard() from an empty stack!")
         temp = self.cards.pop()
         return temp
 
@@ -81,24 +83,36 @@ class Player(object):
     def addCardToHand(self, stack):
         self.hand.append(stack)
 
+    def getCardFromHand(self, index):
+        return self.hand[i].pop()
+
+    def drawCardFromHand(self, index):
+        return self.hand[i].pop(index).pop()
+
 
 class Table(object):
     def __init__(self, size_x, size_y, players, deck):
         self.size_x = size_x
         self.size_y = size_y
-        self.cards = [[Card() for i in range(size_x)] for i in range(size_y)]
         self.players = players
         self.deck = deck
+        self.cards = []
+        for y in range(size_y):
+            temp = []
+            for x in range(size_x):
+                temp.append(Stack())
+            self.cards.append(temp)
 
     def __str__(self):
         to_be_returned = ''
         for i in self.players:
             to_be_returned += str(i)
-            to_be_returned += '\n\n'
+            to_be_returned += '\n'
 
-        to_be_returned += '\n\n\nAmount of cards in the deck: ' + str(self.deck.amount_of_cards)
+        to_be_returned += '\nAmount of cards in the deck: ' + str(self.deck.amount_of_cards)
 
         return to_be_returned
+
     def deal(self, player_template, table_template):
         for player in self.players:
             for i in player_template:
@@ -109,16 +123,51 @@ class Table(object):
                     temp_stack.push(real_card)
                 player.addCardToHand(temp_stack)
 
+        for y in range(len(table_template)):
+            for x in range(y):
+                temp_stack = Stack()
+                # for a in table_template[x][y]:
+                #     real_card = self.deck.drawCard()
+                #     real_card.visible = a.visible
+                #     temp_stack.push(real_card)
+                try:
+                    self.cards[x][y] = temp_stack
+                except:
+                    print(x, y)
+                    print(self.cards)
+                    quit()
 
-        for y in table_template:
-            for x in y:
-                self.cards[x][y] = self.deck.drawCard()
-                self.cards[x][y].visible = x.visible
+        return None
+
+        # for y in range(len(table_template)):
+        #     for x in range(len(y)):
+        #         temp_stack = Stack()
+        #         real_card = self.deck.drawCard()
+        #         real_card.
+        #         self.cards[x][y] = self.deck.drawCard()
+        #         self.cards[x][y].visible = x.visible
+
+    def getCard(self, x, y):
+        if x >= self.size_x or y >= self.size_y:
+            return None
+        return self.cards[x][y]
+
+    def giveCard(self, giver, receiver, index):
+        receiver.hand.append(giver.drawCardFromHand(index))
+        return None
+
+    def putCardToTable(self, x, y, player, index):
+        self.cards[x][y].push(player.drawCardFromHand(index))
+        return None
 
 
 
 class Cell(object):
-    def __init__(self, id, *args):
+    object_count = 0
+
+    def __init__(self, *args):
+        self.__id = Cell.object_count
+        Cell.object_count += 1
         self.stack = args
 
     def __str__(self):
@@ -132,9 +181,13 @@ class Cell(object):
 bismarkin_käsi = []
 
 for i in range(10):
-    bismarkin_käsi.append(Cell(i, Card(visible=False), Card(visible=True)))
+    bismarkin_käsi.append(Cell(Card(visible=False), Card(visible=True)))
 for i in range(6):
-    bismarkin_käsi.append(Cell(i, Card(visible=False)))
+    bismarkin_käsi.append(Cell(Card(visible=False)))
+
+bismarkin_pöytä_template = []
+for i in range(10):
+    bismarkin_pöytä_template.append([Cell(Card(visible=False), Card(visible=True))])
 
 
 deck = DeckOfCards(52)
@@ -142,8 +195,8 @@ deck.shuffle()
 
 players = [Player('kaappo'), Player('kaappo2')]
 
-bismarkin_pöytä = Table(0, 0, players, deck)
-bismarkin_pöytä.deal(bismarkin_käsi, [])
+bismarkin_pöytä = Table(2, 10, players, deck)
+bismarkin_pöytä.deal(bismarkin_käsi, bismarkin_pöytä_template)
 
 # for i in players:
 #     print(i)
