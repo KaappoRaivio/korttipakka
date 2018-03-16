@@ -132,11 +132,27 @@ class Table(object):
             to_be_returned += str(i)
             to_be_returned += '\n'
 
+        to_be_returned += '\n'
+        print(self.cards)
+        for x in range(len(self.cards)):
+            temp = ''
+            for y in range(len(self.cards[x])):
+                if str(self.getCard(x, y)) != "None":
+                    temp += str(self.getCard(x, y))
+                else:
+                    temp += "<>"
+                temp += ' '
+            to_be_returned += temp
+            to_be_returned += '\n'
+
+
         to_be_returned += '\nAmount of cards in the deck: ' + str(self.deck.amount_of_cards)
 
         return to_be_returned
 
     def deal(self, player_template, table_template):
+
+        # käsikortit
         for player in self.players:
             for i in player_template:
                 temp_stack = Stack()
@@ -145,33 +161,25 @@ class Table(object):
                     real_card.visible = a.visible
                     temp_stack.push(real_card)
                 player.addCardToHand(temp_stack)
-        print(self.deck.amount_of_cards)
-        for y in range(len(table_template)):
-            for x in range(len(table_template[y]) - 1):
-                temp_stack = Stack()
-                for a in table_template[x][y]:
+
+        # pöytäkortit
+        for x in range(len(table_template)):
+            for y in range(len(table_template[x])):
+                for card in table_template[x][y].stack:
+                    # print(table_template[x][y])
                     real_card = self.deck.drawCard()
-                    print(real_card)
-                    real_card.visible = a.visible
-                    temp_stack.push(real_card)
-                try:
-                    # self.cards[x][y] = temp_stack
-                    self.setCard(x, y, temp_stack)
-                except:
-                    raise DealingError('The table_template is different size than the size of the table!')
+                    real_card.visible = card.visible
+                    print('real_card: {}.'.format(real_card))
+                    self.cards[x][y].push(real_card)
+                    print(self.cards[x][y])
+
+
         return None
 
-        # for y in range(len(table_template)):
-        #     for x in range(len(y)):
-        #         temp_stack = Stack()
-        #         real_card = self.deck.drawCard()
-        #         real_card.
-        #         self.cards[x][y] = self.deck.drawCard()
-        #         self.cards[x][y].visible = x.visible
 
     def getCard(self, x, y):
-        if x >= self.size_x or y >= self.size_y:
-            return None
+        # if x > self.size_x or y > self.size_y:
+        #     return "from Function getCard: 'x > self.size_x or y > self.size_y' = True"
         return self.cards[x][y]
 
     def setCard(self, x, y, value):
@@ -191,6 +199,9 @@ class Table(object):
     def flipCard(self, x, y):
         self.getCard(x, y).visible = not self.getCard(x, y).visible
 
+    def takeCardFromTable(self, x, y):
+        return self.cards[x][y].pop()
+
 
 class Cell(object):
     object_count = 0
@@ -201,23 +212,21 @@ class Cell(object):
         Cell.object_count += 1
 
     def __str__(self):
-        return 'type:<Cell>; ' + str(self.stack.peek())
+        return 'type:<Cell>; ' + str(self.stack)
 
     @property
     def how_many_stacked(self):
         return len(self.stack)
 
 
-bismarkin_käsi = []
+käsi = []
+for i in range(4):
+    käsi.append(Cell(Card(visible=False)))
 
-for i in range(10):
-    bismarkin_käsi.append(Cell(Card(visible=False), Card(visible=True)))
-for i in range(6):
-    bismarkin_käsi.append(Cell(Card(visible=False)))
-
-bismarkin_pöytä_template = []
-# for i in range(10):
-#     bismarkin_pöytä_template.append([Cell(Card(visible=False), Card(visible=True))])
+pöytä = [[]]
+for i in range(4):
+    pöytä[0].append(Cell(Card(visible=True)))
+# print(pöytä)
 
 
 deck = DeckOfCards(52)
@@ -225,13 +234,12 @@ deck.shuffle()
 
 players = [Player('kaappo'), Player('kaappo2')]
 
-bismarkin_pöytä = Table(2, 10, players, deck)
-bismarkin_pöytä.deal(bismarkin_käsi, [])
+pelipöytä = Table(4, 1, players, deck)
+
+
+pelipöytä.deal(käsi, pöytä)
 
 # for i in players:
 #     print(i)
-
-print(bismarkin_pöytä)
-
-players[0].flipCardInHand(2)
-print(bismarkin_pöytä)
+pelipöytä.takeCardFromTable(0, 2)
+print(pelipöytä)
