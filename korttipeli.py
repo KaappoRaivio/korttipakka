@@ -2,14 +2,7 @@
 
 import random
 from stack import Stack
-
-
-class DrawCardError(Exception):
-    pass
-
-
-class DealingError(Exception):
-    pass
+from exceptions import * 
 
 
 class Card(object):
