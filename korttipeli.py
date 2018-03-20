@@ -2,7 +2,7 @@
 
 import random
 from stack import Stack
-from exceptions import * 
+from exceptions import *
 
 
 class Card(object):
@@ -51,7 +51,6 @@ class DeckOfCards(object):
 
     def drawCard(self):
         if self.amount_of_cards == 0:
-            print("hei")
             raise DrawCardError("Can't drawCard() from an empty stack!")
 
         temp = self.__cards.pop()
@@ -76,6 +75,9 @@ class Player(object):
     @property
     def amount_of_cards(self):
         return len(self.hand)
+
+    def __repr__(self):
+        return 'Player({}, RFG_pile={})'.format(self.name, self.RFG_pile)
 
     def __str__(self):
         to_be_returned = ''
@@ -102,8 +104,6 @@ class Player(object):
     def flipCardInHand(self, index):
         self.hand[index].peek().visible = not self.peekCardFromHand(index).visible
 
-    def __repr__(self):
-        return 'Player({}, RFG_pile={})'.format(self.name, self.RFG_pile)
 
 
 class Table(object):
@@ -126,7 +126,7 @@ class Table(object):
             to_be_returned += '\n'
 
         to_be_returned += '\n'
-        print(self.cards)
+
         for x in range(len(self.cards)):
             temp = ''
             for y in range(len(self.cards[x])):
@@ -159,12 +159,9 @@ class Table(object):
         for x in range(len(table_template)):
             for y in range(len(table_template[x])):
                 for card in table_template[x][y].stack:
-                    # print(table_template[x][y])
                     real_card = self.deck.drawCard()
                     real_card.visible = card.visible
-                    print('real_card: {}.'.format(real_card))
                     self.cards[x][y].push(real_card)
-                    print(self.cards[x][y])
 
 
         return None
@@ -219,7 +216,6 @@ for i in range(4):
 pöytä = [[]]
 for i in range(4):
     pöytä[0].append(Cell(Card(visible=True)))
-# print(pöytä)
 
 
 deck = DeckOfCards(52)
@@ -232,7 +228,5 @@ pelipöytä = Table(4, 1, players, deck)
 
 pelipöytä.deal(käsi, pöytä)
 
-# for i in players:
-#     print(i)
 pelipöytä.takeCardFromTable(0, 2)
 print(pelipöytä)
