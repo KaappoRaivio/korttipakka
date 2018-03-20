@@ -99,7 +99,7 @@ class Player(object):
         return self.hand[index].peek()
 
     def drawCardFromHand(self, index):
-        return self.hand[i].pop(index).pop()
+        return self.hand.pop(index).pop()
 
     def flipCardInHand(self, index):
         self.hand[index].peek().visible = not self.peekCardFromHand(index).visible
@@ -208,25 +208,25 @@ class Cell(object):
     def how_many_stacked(self):
         return len(self.stack)
 
-
-käsi = []
-for i in range(4):
-    käsi.append(Cell(Card(visible=False)))
-
-pöytä = [[]]
-for i in range(4):
-    pöytä[0].append(Cell(Card(visible=True)))
-
-
-deck = DeckOfCards(52)
-deck.shuffle()
-
-players = [Player('kaappo'), Player('kaappo2')]
-
-pelipöytä = Table(4, 1, players, deck)
-
-
-pelipöytä.deal(käsi, pöytä)
-
-pelipöytä.takeCardFromTable(0, 2)
-print(pelipöytä)
+#
+# käsi = []
+# for i in range(4):
+#     käsi.append(Cell(Card(visible=False)))
+#
+# pöytä = [[]]
+# for i in range(4):
+#     pöytä[0].append(Cell(Card(visible=True)))
+#
+#
+# deck = DeckOfCards(52)
+# deck.shuffle()
+#
+# players = [Player('kaappo'), Player('kaappo2')]
+#
+# pelipöytä = Table(4, 1, players, deck)
+#
+#
+# pelipöytä.deal(käsi, pöytä)
+#
+# pelipöytä.takeCardFromTable(0, 2)
+# print(pelipöytä)
