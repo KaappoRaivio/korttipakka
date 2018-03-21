@@ -28,6 +28,42 @@ class Card(object):
     def __repr__(self):
         return 'Card({}, {}, {})'.format(self.suit, self.value, self.visible)
 
+    def __gt__(self, other):
+        if isinstance(other, Card):
+            return self.value > other.value
+        else:
+            return self.value > other
+
+    def __lt__(self, other):
+        if isinstance(other, Card):
+            return self.value < other.value
+        else:
+            return self.value < other
+
+    def __et__(self, other):
+        if isinstance(other, Card):
+            return self.value == other.value
+        else:
+            return self.value == other
+
+    def __ne__(self, other):
+        if isinstance(other, Card):
+            return self.value != other.value
+        else:
+            return self.value != other
+
+    def __ge__(self, other):
+        if isinstance(other, Card):
+            return self.value >= other.value
+        else:
+            return self.value >= other
+
+    def __le__(self, other):
+        if isinstance(other, Card):
+            return self.value <= other.value
+        else:
+            return self.value <= other
+
 
 class DeckOfCards(object):
     suits = ['clubs', 'spades', 'hearts', 'diamonds']
@@ -66,7 +102,7 @@ class DeckOfCards(object):
 
 class Player(object):
     def __init__(self, name, RFG_pile=None):
-        self.hand = []
+        self.__hand = []
         self.name = name
         self.RFG_pile = RFG_pile
         if RFG_pile is not None:
@@ -104,6 +140,23 @@ class Player(object):
     def flipCardInHand(self, index):
         self.hand[index].peek().visible = not self.peekCardFromHand(index).visible
 
+    @property
+    def propertyprint(self):
+        to_be_returned = ''
+
+        to_be_returned += self.name + ': '
+
+        temp = []
+        for i in self.hand:
+            # print(i.peek())
+            temp.append(str(i.peek()))
+
+        to_be_returned += ', '.join(temp)
+        return to_be_returned
+
+    @property
+    def hand(self):
+        return self.__hand
 
 
 class Table(object):
@@ -122,7 +175,7 @@ class Table(object):
     def __str__(self):
         to_be_returned = ''
         for i in self.players:
-            to_be_returned += str(i)
+            to_be_returned += i.propertyprint
             to_be_returned += '\n'
 
         to_be_returned += '\n'
