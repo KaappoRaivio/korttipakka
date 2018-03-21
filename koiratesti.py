@@ -1,6 +1,8 @@
 import korttipeli
 from stack import Stack
 
+
+
 korttipakka = korttipeli.DeckOfCards(52)
 korttipakka.shuffle()
 
@@ -13,6 +15,11 @@ pöytä_käsi = [[]]
 pelipöytä = korttipeli.Table(1, 1, pelaajat, korttipakka)
 pelipöytä.deal(pelaaja_käsi, pöytä_käsi)
 
+
+def handleThreeCards():
+    for pelaaja in pelaajat:
+        while pelaaja.amount_of_cards < 3:
+            pelaaja.addCardToHand(Stack(korttipakka.drawCard()))
 
 vuoro = -1
 kierros = 0
@@ -27,24 +34,20 @@ while True:
     ottaja = pelaajat[(vuoro + 1) % len(pelaajat)]
 
     print('Pelaajan {} vuoro'.format(tarjoaja))
-    # print(tarjoaja)
 
     tarjoajan_indeksi = int(input('Monesko kortti?')) - 1
     tarjottu_kortti = tarjoaja.drawCardFromHand(tarjoajan_indeksi)
-    tarjoaja.addCardToHand(Stack(korttipakka.drawCard()))
-
-    print(str(tarjoaja)  + 'asd\n')
-
+    handleThreeCards()
 
     pelipöytä.putCardToTable(0, 0, tarjoaja, tarjoajan_indeksi)
 
     print(pelipöytä)
     print(ottaja)
 
-    ottajan_indeksi = int(input('Monesko kortti?')) - 1
+    ottajan_indeksi = int(input('Monesko kortti?'))
     ottava_kortti = ottaja.drawCardFromHand(ottajan_indeksi)
-    ottaja.addCardToHand(Stack(korttipakka.drawCard()))
 
+    handleThreeCards()
 
     pelipöytä.putCardToTable(0, 0, tarjoaja, ottajan_indeksi)
 

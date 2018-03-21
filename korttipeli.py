@@ -78,7 +78,7 @@ class DeckOfCards(object):
                     self.__cards.append(Card(suit, value))
             else:
                 for value in range(2, 15):
-                    self.__cards.append(Card(suit, value))
+                    self.__cards.append(Card(suit, value, visible=False))
 
     def shuffle(self):
         for i in range(len(self.__cards) - 1, 0, -1):
@@ -110,7 +110,7 @@ class Player(object):
 
     @property
     def amount_of_cards(self):
-        return len(self.hand)
+        return len(self.__hand)
 
     def __repr__(self):
         return 'Player({}, RFG_pile={})'.format(self.name, self.RFG_pile)
@@ -121,7 +121,7 @@ class Player(object):
         to_be_returned += self.name + ': '
 
         temp = []
-        for i in self.hand:
+        for i in self.__hand:
             # print(i.peek())
             temp.append(str(i.peek()))
 
@@ -129,16 +129,19 @@ class Player(object):
         return to_be_returned
 
     def addCardToHand(self, stack):
-        self.hand.append(stack)
+        self.__hand.append(stack)
 
     def peekCardFromHand(self, index):
-        return self.hand[index].peek()
+        return self.__hand[index].peek()
 
     def drawCardFromHand(self, index):
-        return self.hand.pop(index).pop()
+        if 0 <= index <= len(self.__hand):
+            return self.__hand.pop(index).pop()
+        else:
+            return None
 
     def flipCardInHand(self, index):
-        self.hand[index].peek().visible = not self.peekCardFromHand(index).visible
+        self.__hand[index].peek().visible = not self.peekCardFromHand(index).visible
 
     @property
     def propertyprint(self):
@@ -193,6 +196,8 @@ class Table(object):
 
 
         to_be_returned += '\nAmount of cards in the deck: ' + str(self.deck.amount_of_cards)
+        to_be_returned += '\n\n-----------------------------------------------------'
+
 
         return to_be_returned
 
